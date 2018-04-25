@@ -43,6 +43,10 @@ from torch.autograd import Variable
 import numpy as np
 import torchvision
 from torchvision import datasets, models, transforms
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+plt.ioff()
 import time
 import os
 import copy
@@ -76,13 +80,13 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 # Just normalization for validation
 data_transforms = {
     'train': transforms.Compose([
-        transforms.RandomSizedCrop(224),
+        transforms.RandomResizedCrop(224),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ]),
     'test': transforms.Compose([
-        transforms.Scale(256),
+        transforms.Resize(256),
         transforms.CenterCrop(224),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
@@ -107,14 +111,29 @@ use_gpu = torch.cuda.is_available()
 # Let's visualize a few training images so as to understand the data
 # augmentations.
 
+def imshow(inp, title=None):
+    """Imshow for Tensor."""
+    inp = inp.numpy().transpose((1, 2, 0))
+    mean = np.array([0.485, 0.456, 0.406])
+    std = np.array([0.229, 0.224, 0.225])
+    inp = std * inp + mean
+    inp = np.clip(inp, 0, 1)
+    plt.imshow(inp)
+    
+    if title is not None:
+        plt.title(title)
+    plt.pause(0.001)  # pause a bit so that plots are updated
+    plt.savefig('./test.png')
+
 
 # Get a batch of training data
 inputs, classes = next(iter(dataloaders['train']))
 
 # Make a grid from batch
-out = torchvision.utils.make_grid(inputs)
+out = torchvision.utils.make_grid(inputs, nrow = class_num)
 
-
+print(classes)
+imshow(out, title=[class_names[x] for x in classes])
 
 ######################################################################
 # Training the model
@@ -268,7 +287,7 @@ for param in model_conv.parameters():
 
 # Parameters of newly constructed modules have requires_grad=True by default
 num_ftrs = model_conv.fc.in_features
-model_conv.fc = nn.Linear(num_ftrs, 2)
+model_conv.fc = nn.Linear(num_ftrs, class_num)
 
 if use_gpu:
     model_conv = model_conv.cuda()

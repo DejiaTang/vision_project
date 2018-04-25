@@ -46,8 +46,10 @@ from torchvision import datasets, models, transforms
 import time
 import os
 import copy
+from PIL import ImageFile
 
 class_num = 3
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 ######################################################################
 # Load Data
@@ -112,7 +114,6 @@ inputs, classes = next(iter(dataloaders['train']))
 # Make a grid from batch
 out = torchvision.utils.make_grid(inputs)
 
-imshow(out, title=[class_names[x] for x in classes])
 
 
 ######################################################################
@@ -152,6 +153,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
 
             # Iterate over data.
             for i, data in enumerate(dataloaders[phase], 0):
+
                 # get the inputs
                 inputs, labels = data
 

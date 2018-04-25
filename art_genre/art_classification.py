@@ -47,6 +47,7 @@ import time
 import os
 import copy
 
+class_num = 3
 
 ######################################################################
 # Load Data
@@ -150,7 +151,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
             running_corrects = 0
 
             # Iterate over data.
-            for data in dataloaders[phase]:
+            for i, data in enumerate(dataloaders[phase], 0):
                 # get the inputs
                 inputs, labels = data
 
@@ -218,7 +219,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
 
 model_ft = models.resnet18(pretrained=True)
 num_ftrs = model_ft.fc.in_features
-model_ft.fc = nn.Linear(num_ftrs, 2)
+model_ft.fc = nn.Linear(num_ftrs, class_num)
 
 if use_gpu:
     model_ft = model_ft.cuda()

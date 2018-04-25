@@ -111,7 +111,7 @@ use_gpu = torch.cuda.is_available()
 # Let's visualize a few training images so as to understand the data
 # augmentations.
 
-def imshow(inp, title=None):
+def imshow(inp, filename, title=None,):
     """Imshow for Tensor."""
     inp = inp.numpy().transpose((1, 2, 0))
     mean = np.array([0.485, 0.456, 0.406])
@@ -123,7 +123,7 @@ def imshow(inp, title=None):
     if title is not None:
         plt.title(title)
     plt.pause(0.001)  # pause a bit so that plots are updated
-    plt.savefig(title+'.png')
+    plt.savefig(filename)
 
 ######################################################################
 # Visualizing the model predictions
@@ -151,7 +151,7 @@ def visualize_model(model, num_images=6):
             ax = plt.subplot(num_images//2, 2, images_so_far)
             ax.axis('off')
             ax.set_title('predicted: {}'.format(class_names[preds[j]]))
-            imshow(inputs.cpu().data[j])
+            imshow(inputs.cpu().data[j], 'model.jpg')
             
             if images_so_far == num_images:
                 return
@@ -164,7 +164,7 @@ inputs, classes = next(iter(dataloaders['train']))
 out = torchvision.utils.make_grid(inputs, nrow = class_num)
 
 print(classes)
-imshow(out, title=[class_names[x] for x in classes])
+imshow(out, 'images.jpg', title=[class_names[x] for x in classes])
 
 ######################################################################
 # Training the model

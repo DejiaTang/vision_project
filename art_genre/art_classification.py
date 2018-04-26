@@ -52,7 +52,8 @@ import os
 import copy
 from PIL import ImageFile
 
-class_num = 3
+class_num = int(input("Please enter number of class: "))
+epoch_num = int(input("Please enter number of epoch: "))
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 ######################################################################
@@ -136,7 +137,7 @@ def visualize_model(model, num_images=6):
     images_so_far = 0
     fig = plt.figure()
     
-    for i, data in enumerate(dataloaders['val']):
+    for i, data in enumerate(dataloaders['train']):
         inputs, labels = data
         if use_gpu:
             inputs, labels = Variable(inputs.cuda()), Variable(labels.cuda())
@@ -180,7 +181,7 @@ imshow(out, 'images.jpg', title=[class_names[x] for x in classes])
 # ``torch.optim.lr_scheduler``.
 
 
-def train_model(model, criterion, optimizer, scheduler, num_epochs=25):
+def train_model(model, criterion, optimizer, scheduler, num_epochs=epoch_num):
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
@@ -285,7 +286,7 @@ exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 #
 
 model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
-                       num_epochs=25)
+                       num_epochs=epoch_num)
 
 ######################################################################
 #
@@ -335,7 +336,7 @@ exp_lr_scheduler = lr_scheduler.StepLR(optimizer_conv, step_size=7, gamma=0.1)
 #
 
 model_conv = train_model(model_conv, criterion, optimizer_conv,
-                         exp_lr_scheduler, num_epochs=25)
+                         exp_lr_scheduler, num_epochs=epoch_num)
 
 ######################################################################
 ######################################################################

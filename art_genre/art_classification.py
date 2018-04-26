@@ -180,6 +180,7 @@ imshow(out, 'images.jpg', title=[class_names[x] for x in classes])
 # In the following, parameter ``scheduler`` is an LR scheduler object from
 # ``torch.optim.lr_scheduler``.
 
+stats = image_datasets = {x: [] for x in ['train', 'test']}
 
 def train_model(model, criterion, optimizer, scheduler, num_epochs=epoch_num):
     since = time.time()
@@ -188,7 +189,7 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=epoch_num):
     best_acc = 0.0
 
     for epoch in range(num_epochs):
-        print('Epoch {}/{}'.format(epoch, num_epochs - 1))
+        print('Epoch {}/{}'.format(epoch+1, num_epochs))
         print('-' * 10)
 
         # Each epoch has a training and validation phase
@@ -237,6 +238,8 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=epoch_num):
 
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(
                 phase, epoch_loss, epoch_acc))
+            stats[phase].append((epoch+1, epoch_loss, epoch_acc))
+            print(stats)
 
             # deep copy the model
             if phase == 'test' and epoch_acc > best_acc:

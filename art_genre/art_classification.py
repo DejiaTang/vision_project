@@ -133,7 +133,7 @@ def imshow(inp, filename, title=None,):
 # Generic function to display predictions for a few images
 #
 
-def visualize_model(model, num_images=6):
+def visualize_model(model, filename,  num_images=6):
     images_so_far = 0
     fig = plt.figure()
     
@@ -152,7 +152,7 @@ def visualize_model(model, num_images=6):
             ax = plt.subplot(num_images//2, 2, images_so_far)
             ax.axis('off')
             ax.set_title('predicted: {}'.format(class_names[preds[j]]))
-            imshow(inputs.cpu().data[j], 'model.jpg')
+            imshow(inputs.cpu().data[j], filename)
             
             if images_so_far == num_images:
                 return
@@ -292,8 +292,9 @@ model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
                        num_epochs=epoch_num)
 
 ######################################################################
+######################################################################
 #
-
+visualize_model(model_conv, 'model1.jpg')
 
 
 ######################################################################
@@ -344,4 +345,4 @@ model_conv = train_model(model_conv, criterion, optimizer_conv,
 ######################################################################
 ######################################################################
 #
-visualize_model(model_conv)
+visualize_model(model_conv, model2.jpg)

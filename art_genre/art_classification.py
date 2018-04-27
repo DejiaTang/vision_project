@@ -180,13 +180,16 @@ imshow(out, 'images.jpg', title=[class_names[x] for x in classes])
 # In the following, parameter ``scheduler`` is an LR scheduler object from
 # ``torch.optim.lr_scheduler``.
 
-stats = image_datasets = {x: [] for x in ['train', 'test']}
 
-def train_model(model, criterion, optimizer, scheduler, num_epochs=epoch_num):
+def train_model(model, criterion, optimizer, scheduler, output_filename, num_epochs=epoch_num):
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
+
+    result_file = open(output_filename, 'w')
+    result_file.write('epoch,phase,epock_loss,epoch_acc\n')
+    result_file.close()
 
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch+1, num_epochs))
@@ -238,8 +241,11 @@ def train_model(model, criterion, optimizer, scheduler, num_epochs=epoch_num):
 
             print('{} Loss: {:.4f} Acc: {:.4f}'.format(
                 phase, epoch_loss, epoch_acc))
-            stats[phase].append((epoch+1, epoch_loss, epoch_acc))
-            print(stats)
+    
+            result_file = open(output_filename, 'a')
+            result = ','.join(str(x) for x in [epoch, phase, epoch_loss, epoch_acc]) + '\n'
+            result_file.write(result)
+            result_file.close()
 
             # deep copy the model
             if phase == 'test' and epoch_acc > best_acc:
@@ -288,7 +294,7 @@ exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 # minute.
 #
 
-model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler,
+model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler, 'model1.csv'
                        num_epochs=epoch_num)
 
 ######################################################################
@@ -340,7 +346,7 @@ exp_lr_scheduler = lr_scheduler.StepLR(optimizer_conv, step_size=7, gamma=0.1)
 #
 
 model_conv = train_model(model_conv, criterion, optimizer_conv,
-                         exp_lr_scheduler, num_epochs=epoch_num)
+                         exp_lr_scheduler, 'model2.csv', num_epochs=epoch_num)
 
 ######################################################################
 ######################################################################

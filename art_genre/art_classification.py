@@ -54,7 +54,12 @@ from PIL import ImageFile
 
 class_num = int(input("Please enter number of class: "))
 epoch_num = int(input("Please enter number of epoch: "))
+output_filename = str(input("Please enter output filename: "))
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+
+result_file = open(output_filename, 'w')
+result_file.write('model,epoch,phase,epock_loss,epoch_acc\n')
+result_file.close()
 
 ######################################################################
 # Load Data
@@ -181,15 +186,11 @@ imshow(out, 'images.jpg', title=[class_names[x] for x in classes])
 # ``torch.optim.lr_scheduler``.
 
 
-def train_model(model, criterion, optimizer, scheduler, output_filename, num_epochs=epoch_num):
+def train_model(model, criterion, optimizer, scheduler, model_id, num_epochs=epoch_num):
     since = time.time()
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
-
-    result_file = open(output_filename, 'w')
-    result_file.write('epoch,phase,epock_loss,epoch_acc\n')
-    result_file.close()
 
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch+1, num_epochs))
@@ -243,7 +244,7 @@ def train_model(model, criterion, optimizer, scheduler, output_filename, num_epo
                 phase, epoch_loss, epoch_acc))
     
             result_file = open(output_filename, 'a')
-            result = ','.join(str(x) for x in [epoch, phase, epoch_loss, epoch_acc]) + '\n'
+            result = ','.join(str(x) for x in [model_id, epoch, phase, epoch_loss, epoch_acc]) + '\n'
             result_file.write(result)
             result_file.close()
 
@@ -294,7 +295,7 @@ exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=7, gamma=0.1)
 # minute.
 #
 
-model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler, 'model1.csv'
+model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler, 'finetune'
                        ,num_epochs=epoch_num)
 
 ######################################################################
@@ -347,7 +348,7 @@ exp_lr_scheduler = lr_scheduler.StepLR(optimizer_conv, step_size=7, gamma=0.1)
 #
 
 model_conv = train_model(model_conv, criterion, optimizer_conv,
-                         exp_lr_scheduler, 'model2.csv', num_epochs=epoch_num)
+                         exp_lr_scheduler, 'feature_extract', num_epochs=epoch_num)
 
 ######################################################################
 ######################################################################

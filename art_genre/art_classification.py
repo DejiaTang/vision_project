@@ -300,7 +300,8 @@ model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler, 'mod
 ######################################################################
 ######################################################################
 #
-visualize_model(model_conv, 'model1.jpg')
+
+visualize_model(model_ft, 'model1.jpg')
 
 
 ######################################################################

@@ -1,37 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Transfer Learning tutorial
-==========================
-**Author**: `Sasank Chilamkurthy <https://chsasank.github.io>`_
-
-In this tutorial, you will learn how to train your network using
-transfer learning. You can read more about the transfer learning at `cs231n
-notes <http://cs231n.github.io/transfer-learning/>`__
-
-Quoting this notes,
-
-    In practice, very few people train an entire Convolutional Network
-    from scratch (with random initialization), because it is relatively
-    rare to have a dataset of sufficient size. Instead, it is common to
-    pretrain a ConvNet on a very large dataset (e.g. ImageNet, which
-    contains 1.2 million images with 1000 categories), and then use the
-    ConvNet either as an initialization or a fixed feature extractor for
-    the task of interest.
-
-These two major transfer learning scenarios looks as follows:
-
--  **Finetuning the convnet**: Instead of random initializaion, we
-   initialize the network with a pretrained network, like the one that is
-   trained on imagenet 1000 dataset. Rest of the training looks as
-   usual.
--  **ConvNet as fixed feature extractor**: Here, we will freeze the weights
-   for all of the network except that of the final fully connected
-   layer. This last fully connected layer is replaced with a new one
-   with random weights and only this layer is trained.
-
+Transfer Learning for Art Classification
+=========================================
+**Reference Codes by**: `Sasank Chilamkurthy <https://chsasank.github.io>`_
 """
-# License: BSD
-# Author: Sasank Chilamkurthy
 
 from __future__ import print_function, division
 
@@ -67,20 +39,6 @@ result_file.close()
 #
 # We will use torchvision and torch.utils.data packages for loading the
 # data.
-#
-# The problem we're going to solve today is to train a model to classify
-# **ants** and **bees**. We have about 120 training images each for ants and bees.
-# There are 75 validation images for each class. Usually, this is a very
-# small dataset to generalize upon, if trained from scratch. Since we
-# are using transfer learning, we should be able to generalize reasonably
-# well.
-#
-# This dataset is a very small subset of imagenet.
-#
-# .. Note ::
-#    Download the data from
-#    `here <https://download.pytorch.org/tutorial/hymenoptera_data.zip>`_
-#    and extract it to the current directory.
 
 # Data augmentation and normalization for training
 # Just normalization for validation
@@ -95,7 +53,9 @@ data_transforms = {
         transforms.Resize(256),
         transforms.CenterCrop(224),
         transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        transforms.Normalize(
+                             [0.485, 0.456, 0.406],
+                             [0.229, 0.224, 0.225])
     ]),
 }
 
@@ -312,9 +272,6 @@ visualize_model(model_ft, 'model1.jpg')
 # Here, we need to freeze all the network except the final layer. We need
 # to set ``requires_grad == False`` to freeze the parameters so that the
 # gradients are not computed in ``backward()``.
-#
-# You can read more about this in the documentation
-# `here <http://pytorch.org/docs/notes/autograd.html#excluding-subgraphs-from-backward>`__.
 #
 
 model_conv = torchvision.models.resnet18(pretrained=True)
